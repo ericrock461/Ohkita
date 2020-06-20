@@ -7,6 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+/// <summary>
+/// Erich Rock
+/// Ohkita
+/// Mr. T.
+/// June 19, 2020
+/// </summary>
 
 namespace Ohkita
 {

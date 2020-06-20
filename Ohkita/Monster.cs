@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Ohkita
 {
@@ -26,20 +27,33 @@ namespace Ohkita
         {
             if (direction == "left")
             {
-                x = x - 5;
+                x = x - 10;
             }
             if (direction == "up")
             {
-                y = y - 5;
+                y = y - 10;
             }
             if (direction == "right")
             {
-                x = x + 5;
+                x = x + 10;
             }
             if (direction == "down")
             {
-                y = y + 5;
+                y = y + 10;
             }
         }
+
+        /*
+        public Boolean Collision(Bullet b)
+        {
+            //Rectangle heroRec = new Rectangle(heroMon.x, heroMon.y, heroMon.size, heroMon.size);
+
+            Rectangle MonRec = new Rectangle(x, y, size, size);
+
+            Rectangle BulletRec = new Rectangle(b.x, b.y, b.size, b.size);
+        }*/
+
+        
     }
 }
+

@@ -8,8 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Ohkita
 {
+    //NOTE: After coding the hero and its bullets, I'm just now realizing...
+    //maybe I should have called the bullets (from hero) projectiles, and
+    //the projectiles (from enemies) bullets!
+    //Oh well... for now the hero gets bullets and the enemies projectiles
+
+
     public partial class GameScreen : UserControl
     {
         //button control keys
@@ -23,7 +30,7 @@ namespace Ohkita
         //used to draw monsters to screen
         SolidBrush monsterBrush = new SolidBrush(Color.DarkRed);
         //used to draw projectiles to the screem
-        SolidBrush projectBrush = new SolidBrush(Color.Blue);
+        SolidBrush projectileBrush = new SolidBrush(Color.Blue);
 
 
 
@@ -40,12 +47,13 @@ namespace Ohkita
         //create "hero" monster 
         Monster hero;
 
-        Random randGen = new Random();
-        int projectX;
+        //determines when bullets will fire
+        int bulletTimer = 0;
 
 
-
-        int projectTimer = 0;
+        //Random randGen = new Random();
+        //int projectX;
+        int projecTimer = 0;
 
 
 
@@ -58,10 +66,10 @@ namespace Ohkita
         public void OnStart()
         {
             //set game start values
-            Monster m = new Monster(150, 150, 10, 50);
+            Monster m = new Monster(300, 50, 20, 25);
             monsters.Add(m);
 
-            hero = new Monster(200, 200, 10, 50);
+            hero = new Monster(400, 300, 20, 50);
         }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -125,16 +133,117 @@ namespace Ohkita
             }
 
 
+            //Bullets
+            bulletTimer++;
+
             //causes the hero to fire bullets (automatically)
+            if (bulletTimer == 3)
+            {
+                Bullet b = new Bullet(hero.x + 5, hero.y + 5, 10);
+                bullets.Add(b);
+
+                bulletTimer = 0;
+            }
+
             foreach (Bullet b in bullets)
             {
-                b.y--;
+                b.y = b.y - 15;
             }
+
+
+            //Projectiles
+            projecTimer++;
+
+            if (projecTimer == 8)
+            {
+                foreach (Monster m in monsters)
+                {
+                    Projectile p = new Projectile(m.x + 5, m.y + 5, 15);
+                    projectiles.Add(p);
+                }
+
+                projecTimer = 0;
+            }
+
+            foreach (Projectile p in projectiles)
+            {
+                p.y = p.y + 8;
+            }
+
+
+            //Collision
+            /*foreach (Monster m in monsters)
+            {
+                if (m.Collision)
+                {
+                    BulletsMonstersCollision()
+                }
+            }*/
+
 
 
 
             Refresh();
         }
+
+
+
+        //So as it turns out, there was code on OneNote for how to do collision involving
+        //multiple objects against multiple objects. And it uses the exact same classes that
+        //I'm using!!!
+        //...but I don't really understand it...
+
+
+        /*public void BulletsMonstersCollision()
+        {
+            //will contain index values of all bullets that have collided with a monster 
+            List<int> bulletsToRemove = new List<int>();
+
+            //will contain index values of all monsters that have collided with a bullet 
+            List<int> monstersToRemove = new List<int>();
+            foreach (Bullet b in bullets)
+            {
+                foreach (Monster m in monsters)
+                {
+                    //uses collision method in monster class and returns true 
+                    //if monster 'm' has collided with bullet 'b' 
+                    if (m.Collision(b))
+                    {
+                        //checks to make sure that the bullet is not already in removal list 
+                        if (!bulletsToRemove.Contains(bullets.IndexOf(b)))
+                        {
+                            //add the index value from bullets of the bullet that collided  
+                            bulletsToRemove.Add(bullets.IndexOf(b));
+                        }
+
+                        //checks to make sure that the monster is not already in removal list 
+                        if (!monstersToRemove.Contains(monsters.IndexOf(m)))
+
+                        {
+
+                            //add the index value from monsters of the monster that collided 
+
+                            monstersToRemove.Add(monsters.IndexOf(m));
+                        }
+                    }
+                }
+            }
+
+            //reverse lists so when removing you do so from the end of the list first 
+            bulletsToRemove.Reverse();
+            monstersToRemove.Reverse();
+
+            foreach (int i in bulletsToRemove)
+            {
+                bullets.RemoveAt(i);
+            }
+            foreach (int i in monstersToRemove)
+            {
+                monsters.RemoveAt(i);
+            }
+        }*/
+
+
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
             //draw monsters to screen
@@ -146,20 +255,18 @@ namespace Ohkita
             //draw the "hero" to the screen
             e.Graphics.FillRectangle(heroBrush, hero.x, hero.y, hero.size, hero.size);
 
+            //draw bullets to the screen
+            foreach (Bullet b in bullets)
+            {
+                e.Graphics.FillRectangle(bulletBrush, b.x, b.y, b.size, b.size);
+            }
 
-            /*  //draw projectiles to the screen
+            
+            //draw projectiles to the screen
             foreach (Projectile p in projectiles)
             {
                 e.Graphics.FillRectangle(projectileBrush, p.x, p.y, p.size, p.size);
             }
-
-            
-
-            //draw the bullets to the screen
-            foreach (Bullet b in bullets)
-            {
-                e.Graphics.FillRectangle(bulletBrush, b.x, b.y, b.size, b.size);
-            }*/
         }
     }
 }
